@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Usuario de git</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#tabla").hide();
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+          $("#ok").click(function(){
+            $("#tabla tbody").empty();
+            $.ajax({
+                type: 'GET',
+                url: 'https://api.github.com/users/' + $("#usuario").val() + '/repos',
+                dataType: 'json',
+                success: function (data) {
+                    $.each(data, function(index, element){
+                        var name = element.name;
+                        var descripcion = element.description;
+                        var fila = "<tr><td>" + name + '</td><td>' + descripcion + '</td></tr>';
+                        $("#tabla tbody").append(fila);
+                        $("#tabla").show();
+                    });
+                }
+            });
+            $.ajax({
+                type: 'GET',
+                url: 'https://api.github.com/users/' + $("#usuario").val(),
+                dataType: 'json',
+                success: function (data) {
+                    var followersCount = data.followers;
+                    $("#texto").html("El usuario de git <b>" + $("#usuario").val() + "</b> tiene " + followersCount + " seguidores");
+                    $("#tabla").show();
+                }
+            });
+          });
+        });
+    </script>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+    <h1>Hola!</h1>
+    <p>Introduzca un usuario de git para ver sus repositorios</p>
+</div>
+
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="usuario">Usuario:</label>
+            <input class="form-control" id="usuario" placeholder="Introduzca el usuario de git" name="usuario">
+        </div>
+    </form>
+</div>
+
+
+
+<div class="container text-center">
+    <input type="button" class="btn btn-primary" value="Aceptar" id="ok" >
+</div>
+
+<div class="container" id="tabla">
+    <h2>Github</h2>
+    <h3 id="texto"></h3>
+    <p>Repositorios del usuario:</p>
+    <table class="table table-striped" >
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Descripción</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+
